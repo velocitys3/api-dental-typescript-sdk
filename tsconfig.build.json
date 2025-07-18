@@ -5,8 +5,8 @@
   "compilerOptions": {
     "rootDir": "./dist/src",
     "paths": {
-      "api-dental-prod/*": ["dist/src/*"],
-      "api-dental-prod": ["dist/src/index.ts"]
+      "api-dental/*": ["dist/src/*"],
+      "api-dental": ["dist/src/index.ts"]
     },
     "noEmit": false,
     "declaration": true,

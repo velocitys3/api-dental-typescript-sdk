@@ -7,8 +7,8 @@ const config: JestConfigWithTsJest = {
     '^.+\\.(t|j)sx?$': ['@swc/jest', { sourceMaps: 'inline' }],
   },
   moduleNameMapper: {
-    '^api-dental-prod$': '<rootDir>/src/index.ts',
-    '^api-dental-prod/(.*)$': '<rootDir>/src/$1',
+    '^api-dental$': '<rootDir>/src/index.ts',
+    '^api-dental/(.*)$': '<rootDir>/src/$1',
   },
   modulePathIgnorePatterns: [
     '<rootDir>/ecosystem-tests/',

@@ -1,7 +1,7 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { hasOwn } from './values';
-import { type APIDentalProd } from '../../client';
+import { type APIDental } from '../../client';
 import { RequestOptions } from '../request-options';
 
 type LogFn = (message: string, ...rest: unknown[]) => void;
@@ -24,7 +24,7 @@ const levelNumbers = {
 export const parseLogLevel = (
   maybeLevel: string | undefined,
   sourceName: string,
-  client: APIDentalProd,
+  client: APIDental,
 ): LogLevel | undefined => {
   if (!maybeLevel) {
     return undefined;
@@ -60,7 +60,7 @@ const noopLogger = {
 
 let cachedLoggers = /* @__PURE__ */ new WeakMap<Logger, [LogLevel, Logger]>();
 
-export function loggerFor(client: APIDentalProd): Logger {
+export function loggerFor(client: APIDental): Logger {
   const logger = client.logger;
   const logLevel = client.logLevel ?? 'off';
   if (!logger) {
@@ -106,6 +106,7 @@ export const formatRequestDetails = (details: {
         ([name, value]) => [
           name,
           (
+            name.toLowerCase() === 'x-token-api' ||
             name.toLowerCase() === 'authorization' ||
             name.toLowerCase() === 'cookie' ||
             name.toLowerCase() === 'set-cookie'
