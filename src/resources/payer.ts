@@ -5,37 +5,32 @@ import { APIPromise } from '../core/api-promise';
 import { RequestOptions } from '../internal/request-options';
 
 export class Payer extends APIResource {
-  retrieve(options?: RequestOptions): APIPromise<PayerRetrieveResponse> {
+  /**
+   * List Payers
+   */
+  listPayers(options?: RequestOptions): APIPromise<PayerListPayersResponse> {
     return this._client.get('/Payer', options);
   }
 }
 
-export interface PayerRetrieveResponse {
-  data?: PayerRetrieveResponse.Data;
-}
+export type PayerListPayersResponse = Array<PayerListPayersResponse.PayerListPayersResponseItem>;
 
-export namespace PayerRetrieveResponse {
-  export interface Data {
-    apidental_payer_list?: Array<Data.ApidentalPayerList>;
-  }
+export namespace PayerListPayersResponse {
+  export interface PayerListPayersResponseItem {
+    id?: string;
 
-  export namespace Data {
-    export interface ApidentalPayerList {
-      id: string;
+    alt_payer_ids?: Array<string>;
 
-      name: string;
+    features?: Array<string>;
 
-      alt_payer_ids?: Array<string>;
+    name?: string;
 
-      features?: Array<string>;
+    onederfulPayerId?: string;
 
-      onederfulPayerId?: string;
-
-      status?: string;
-    }
+    status?: string;
   }
 }
 
 export declare namespace Payer {
-  export { type PayerRetrieveResponse as PayerRetrieveResponse };
+  export { type PayerListPayersResponse as PayerListPayersResponse };
 }

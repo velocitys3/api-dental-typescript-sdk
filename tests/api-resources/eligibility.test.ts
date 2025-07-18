@@ -1,19 +1,24 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import APIDentalProd from 'api-dental-prod';
+import APIDental from 'api-dental';
 
-const client = new APIDentalProd({
+const client = new APIDental({
   apiKey: 'My API Key',
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
 describe('resource eligibility', () => {
-  // skipped: tests are disabled for the time being
-  test.skip('check: only required params', async () => {
-    const responsePromise = client.eligibility.check({
-      payer: {},
-      provider: {},
-      subscriber: {},
+  test('checkEligibility: only required params', async () => {
+    const responsePromise = client.eligibility.checkEligibility({
+      payer: { id: 'id' },
+      provider: { npi: 'npi', tax_id: 'tax_id' },
+      subscriber: {
+        dob: '2019-12-27',
+        first_name: 'first_name',
+        group_number: 'group_number',
+        last_name: 'last_name',
+        member_id: 'member_id',
+      },
       version: 'version',
     });
     const rawResponse = await responsePromise.asResponse();
@@ -25,13 +30,12 @@ describe('resource eligibility', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // skipped: tests are disabled for the time being
-  test.skip('check: required and optional params', async () => {
-    const response = await client.eligibility.check({
+  test('checkEligibility: required and optional params', async () => {
+    const response = await client.eligibility.checkEligibility({
       payer: { id: 'id' },
       provider: { npi: 'npi', tax_id: 'tax_id' },
       subscriber: {
-        dob: 'dob',
+        dob: '2019-12-27',
         first_name: 'first_name',
         group_number: 'group_number',
         last_name: 'last_name',

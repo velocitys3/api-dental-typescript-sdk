@@ -11,130 +11,20 @@ import type { APIResponseProps } from './internal/parse';
 import { getPlatformHeaders } from './internal/detect-platform';
 import * as Shims from './internal/shims';
 import * as Opts from './internal/request-options';
-import * as qs from './internal/qs';
 import { VERSION } from './version';
 import * as Errors from './core/error';
 import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import {
-  Apidental,
-  ApidentalCreateEligibilityParams,
-  ApidentalCreateEligibilityResponse,
-  ApidentalListPayersResponse,
-} from './resources/apidental';
-import {
-  BoolFieldUpdateOperationsInput,
-  DB,
-  DBAggregateUsageParams,
-  DBAggregateUsageRawParams,
-  DBAggregateUsageRawResponse,
-  DBAggregateUsageResponse,
-  DBAggregateUsersParams,
-  DBAggregateUsersRawParams,
-  DBAggregateUsersRawResponse,
-  DBAggregateUsersResponse,
-  DBCreateManyUsageParams,
-  DBCreateManyUsageResponse,
-  DBCreateManyUsersParams,
-  DBCreateManyUsersResponse,
-  DBCreateOneUsageParams,
-  DBCreateOneUsageResponse,
-  DBCreateOneUsersParams,
-  DBCreateOneUsersResponse,
-  DBDeleteManyUsageParams,
-  DBDeleteManyUsageResponse,
-  DBDeleteManyUsersParams,
-  DBDeleteManyUsersResponse,
-  DBDeleteOneUsageParams,
-  DBDeleteOneUsageResponse,
-  DBDeleteOneUsersParams,
-  DBDeleteOneUsersResponse,
-  DBExecuteRawParams,
-  DBExecuteRawResponse,
-  DBFindFirstUsageOrThrowParams,
-  DBFindFirstUsageOrThrowResponse,
-  DBFindFirstUsageParams,
-  DBFindFirstUsageResponse,
-  DBFindFirstUsersOrThrowParams,
-  DBFindFirstUsersOrThrowResponse,
-  DBFindFirstUsersParams,
-  DBFindFirstUsersResponse,
-  DBFindManyUsageParams,
-  DBFindManyUsageResponse,
-  DBFindManyUsersParams,
-  DBFindManyUsersResponse,
-  DBFindUniqueUsageOrThrowResponse,
-  DBFindUniqueUsageResponse,
-  DBFindUniqueUsersOrThrowResponse,
-  DBFindUniqueUsersResponse,
-  DBFindUsageRawResponse,
-  DBFindUsersRawResponse,
-  DBGroupByUsageParams,
-  DBGroupByUsageResponse,
-  DBGroupByUsersParams,
-  DBGroupByUsersResponse,
-  DBQueryRawJsonParams,
-  DBQueryRawJsonResponse,
-  DBQueryRawParams,
-  DBQueryRawResponse,
-  DBRunCommandRawParams,
-  DBRunCommandRawResponse,
-  DBUpdateManyUsageParams,
-  DBUpdateManyUsageResponse,
-  DBUpdateManyUsersParams,
-  DBUpdateManyUsersResponse,
-  DBUpdateOneUsageParams,
-  DBUpdateOneUsageResponse,
-  DBUpdateOneUsersParams,
-  DBUpdateOneUsersResponse,
-  DBUpsertOneUsageParams,
-  DBUpsertOneUsageResponse,
-  DBUpsertOneUsersParams,
-  DBUpsertOneUsersResponse,
-  DateTimeFieldUpdateOperationsInput,
-  IntFieldUpdateOperationsInput,
-  NestedBoolFilter,
-  NestedDateTimeFilter,
-  NestedIntFilter,
-  NestedIntNullableFilter,
-  NestedStringFilter,
-  NestedStringNullableFilter,
-  NullableIntFieldUpdateOperationsInput,
-  NullableStringFieldUpdateOperationsInput,
-  StringFieldUpdateOperationsInput,
-  UsageCreateInput,
-  UsageWhereInput,
-  UsageWhereInput2,
-  UsageWhereUniqueInput,
-  UsersBillingCreateEnvelopeInput,
-  UsersBillingCreateInput,
-  UsersBillingUpdateEnvelopeInput,
-  UsersBillingWhereInput,
-  UsersWhereInput,
-  UsersWhereInput2,
-  UsersWhereUniqueInput,
-} from './resources/db';
-import { Dental, DentalCheckEligibilityParams, DentalCheckEligibilityResponse } from './resources/dental';
-import {
   Eligibility,
-  EligibilityCheckParams,
-  EligibilityCheckResponse,
+  EligibilityCheckEligibilityParams,
+  EligibilityCheckEligibilityResponse,
   PayerInput,
   ProviderInput,
   SubscriberInput,
 } from './resources/eligibility';
-import { Payer, PayerRetrieveResponse } from './resources/payer';
-import {
-  UserRetrieveParams,
-  UserRetrieveResponse,
-  UserSubscribeParams,
-  UserSubscribeResponse,
-  UserUpdateParams,
-  UserUpdateResponse,
-  Users,
-} from './resources/users';
-import { Vs3 } from './resources/vs3/vs3';
+import { Payer, PayerListPayersResponse } from './resources/payer';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
@@ -150,14 +40,14 @@ import { isEmptyObj } from './internal/utils/values';
 
 export interface ClientOptions {
   /**
-   * Defaults to process.env['API_DENTAL_PROD_API_KEY'].
+   * Defaults to process.env['API_DENTAL_API_KEY'].
    */
-  apiKey?: string | null | undefined;
+  apiKey?: string | undefined;
 
   /**
    * Override the default base URL for the API, e.g., "https://api.example.com/v2/"
    *
-   * Defaults to process.env['API_DENTAL_PROD_BASE_URL'].
+   * Defaults to process.env['API_DENTAL_BASE_URL'].
    */
   baseURL?: string | null | undefined;
 
@@ -211,7 +101,7 @@ export interface ClientOptions {
   /**
    * Set the log level.
    *
-   * Defaults to process.env['API_DENTAL_PROD_LOG'] or 'warn' if it isn't set.
+   * Defaults to process.env['API_DENTAL_LOG'] or 'warn' if it isn't set.
    */
   logLevel?: LogLevel | undefined;
 
@@ -224,10 +114,10 @@ export interface ClientOptions {
 }
 
 /**
- * API Client for interfacing with the API Dental Prod API.
+ * API Client for interfacing with the API Dental API.
  */
-export class APIDentalProd {
-  apiKey: string | null;
+export class APIDental {
+  apiKey: string;
 
   baseURL: string;
   maxRetries: number;
@@ -242,10 +132,10 @@ export class APIDentalProd {
   private _options: ClientOptions;
 
   /**
-   * API Client for interfacing with the API Dental Prod API.
+   * API Client for interfacing with the API Dental API.
    *
-   * @param {string | null | undefined} [opts.apiKey=process.env['API_DENTAL_PROD_API_KEY'] ?? null]
-   * @param {string} [opts.baseURL=process.env['API_DENTAL_PROD_BASE_URL'] ?? https://api-dental-wundergraph-d107db273437.herokuapp.com/operations] - Override the default base URL for the API.
+   * @param {string | undefined} [opts.apiKey=process.env['API_DENTAL_API_KEY'] ?? undefined]
+   * @param {string} [opts.baseURL=process.env['API_DENTAL_BASE_URL'] ?? https://graphql.api.dental/gql] - Override the default base URL for the API.
    * @param {number} [opts.timeout=1 minute] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
    * @param {MergedRequestInit} [opts.fetchOptions] - Additional `RequestInit` options to be passed to `fetch` calls.
    * @param {Fetch} [opts.fetch] - Specify a custom `fetch` function implementation.
@@ -254,25 +144,31 @@ export class APIDentalProd {
    * @param {Record<string, string | undefined>} opts.defaultQuery - Default query parameters to include with every request to the API.
    */
   constructor({
-    baseURL = readEnv('API_DENTAL_PROD_BASE_URL'),
-    apiKey = readEnv('API_DENTAL_PROD_API_KEY') ?? null,
+    baseURL = readEnv('API_DENTAL_BASE_URL'),
+    apiKey = readEnv('API_DENTAL_API_KEY'),
     ...opts
   }: ClientOptions = {}) {
+    if (apiKey === undefined) {
+      throw new Errors.APIDentalError(
+        "The API_DENTAL_API_KEY environment variable is missing or empty; either provide it, or instantiate the APIDental client with an apiKey option, like new APIDental({ apiKey: 'My API Key' }).",
+      );
+    }
+
     const options: ClientOptions = {
       apiKey,
       ...opts,
-      baseURL: baseURL || `https://api-dental-wundergraph-d107db273437.herokuapp.com/operations`,
+      baseURL: baseURL || `https://graphql.api.dental/gql`,
     };
 
     this.baseURL = options.baseURL!;
-    this.timeout = options.timeout ?? APIDentalProd.DEFAULT_TIMEOUT /* 1 minute */;
+    this.timeout = options.timeout ?? APIDental.DEFAULT_TIMEOUT /* 1 minute */;
     this.logger = options.logger ?? console;
     const defaultLogLevel = 'warn';
     // Set default logLevel early so that we can log a warning in parseLogLevel.
     this.logLevel = defaultLogLevel;
     this.logLevel =
       parseLogLevel(options.logLevel, 'ClientOptions.logLevel', this) ??
-      parseLogLevel(readEnv('API_DENTAL_PROD_LOG'), "process.env['API_DENTAL_PROD_LOG']", this) ??
+      parseLogLevel(readEnv('API_DENTAL_LOG'), "process.env['API_DENTAL_LOG']", this) ??
       defaultLogLevel;
     this.fetchOptions = options.fetchOptions;
     this.maxRetries = options.maxRetries ?? 2;
@@ -307,7 +203,7 @@ export class APIDentalProd {
    * Check whether the base URL is set to its default.
    */
   #baseURLOverridden(): boolean {
-    return this.baseURL !== 'https://api-dental-wundergraph-d107db273437.herokuapp.com/operations';
+    return this.baseURL !== 'https://graphql.api.dental/gql';
   }
 
   protected defaultQuery(): Record<string, string | undefined> | undefined {
@@ -315,27 +211,31 @@ export class APIDentalProd {
   }
 
   protected validateHeaders({ values, nulls }: NullableHeaders) {
-    if (this.apiKey && values.get('authorization')) {
-      return;
-    }
-    if (nulls.has('authorization')) {
-      return;
-    }
-
-    throw new Error(
-      'Could not resolve authentication method. Expected the apiKey to be set. Or for the "Authorization" headers to be explicitly omitted',
-    );
+    return;
   }
 
   protected async authHeaders(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    if (this.apiKey == null) {
-      return undefined;
-    }
-    return buildHeaders([{ Authorization: `Bearer ${this.apiKey}` }]);
+    return buildHeaders([{ 'X-Token-API': this.apiKey }]);
   }
 
+  /**
+   * Basic re-implementation of `qs.stringify` for primitive types.
+   */
   protected stringifyQuery(query: Record<string, unknown>): string {
-    return qs.stringify(query, { arrayFormat: 'comma' });
+    return Object.entries(query)
+      .filter(([_, value]) => typeof value !== 'undefined')
+      .map(([key, value]) => {
+        if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+          return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+        }
+        if (value === null) {
+          return `${encodeURIComponent(key)}=`;
+        }
+        throw new Errors.APIDentalError(
+          `Cannot stringify type ${typeof value}; Expected string, number, boolean, or null. If you need to pass nested query parameters, you can manually encode them, e.g. { query: { 'foo[key1]': value1, 'foo[key2]': value2 } }, and please open a GitHub issue requesting better support for your use case.`,
+        );
+      })
+      .join('&');
   }
 
   private getUserAgent(): string {
@@ -803,10 +703,10 @@ export class APIDentalProd {
     }
   }
 
-  static APIDentalProd = this;
+  static APIDental = this;
   static DEFAULT_TIMEOUT = 60000; // 1 minute
 
-  static APIDentalProdError = Errors.APIDentalProdError;
+  static APIDentalError = Errors.APIDentalError;
   static APIError = Errors.APIError;
   static APIConnectionError = Errors.APIConnectionError;
   static APIConnectionTimeoutError = Errors.APIConnectionTimeoutError;
@@ -824,20 +724,10 @@ export class APIDentalProd {
 
   eligibility: API.Eligibility = new API.Eligibility(this);
   payer: API.Payer = new API.Payer(this);
-  apidental: API.Apidental = new API.Apidental(this);
-  db: API.DB = new API.DB(this);
-  dental: API.Dental = new API.Dental(this);
-  users: API.Users = new API.Users(this);
-  vs3: API.Vs3 = new API.Vs3(this);
 }
-APIDentalProd.Eligibility = Eligibility;
-APIDentalProd.Payer = Payer;
-APIDentalProd.Apidental = Apidental;
-APIDentalProd.DB = DB;
-APIDentalProd.Dental = Dental;
-APIDentalProd.Users = Users;
-APIDentalProd.Vs3 = Vs3;
-export declare namespace APIDentalProd {
+APIDental.Eligibility = Eligibility;
+APIDental.Payer = Payer;
+export declare namespace APIDental {
   export type RequestOptions = Opts.RequestOptions;
 
   export {
@@ -845,127 +735,9 @@ export declare namespace APIDentalProd {
     type PayerInput as PayerInput,
     type ProviderInput as ProviderInput,
     type SubscriberInput as SubscriberInput,
-    type EligibilityCheckResponse as EligibilityCheckResponse,
-    type EligibilityCheckParams as EligibilityCheckParams,
+    type EligibilityCheckEligibilityResponse as EligibilityCheckEligibilityResponse,
+    type EligibilityCheckEligibilityParams as EligibilityCheckEligibilityParams,
   };
 
-  export { Payer as Payer, type PayerRetrieveResponse as PayerRetrieveResponse };
-
-  export {
-    Apidental as Apidental,
-    type ApidentalCreateEligibilityResponse as ApidentalCreateEligibilityResponse,
-    type ApidentalListPayersResponse as ApidentalListPayersResponse,
-    type ApidentalCreateEligibilityParams as ApidentalCreateEligibilityParams,
-  };
-
-  export {
-    DB as DB,
-    type BoolFieldUpdateOperationsInput as BoolFieldUpdateOperationsInput,
-    type DateTimeFieldUpdateOperationsInput as DateTimeFieldUpdateOperationsInput,
-    type IntFieldUpdateOperationsInput as IntFieldUpdateOperationsInput,
-    type NestedBoolFilter as NestedBoolFilter,
-    type NestedDateTimeFilter as NestedDateTimeFilter,
-    type NestedIntFilter as NestedIntFilter,
-    type NestedIntNullableFilter as NestedIntNullableFilter,
-    type NestedStringFilter as NestedStringFilter,
-    type NestedStringNullableFilter as NestedStringNullableFilter,
-    type NullableIntFieldUpdateOperationsInput as NullableIntFieldUpdateOperationsInput,
-    type NullableStringFieldUpdateOperationsInput as NullableStringFieldUpdateOperationsInput,
-    type StringFieldUpdateOperationsInput as StringFieldUpdateOperationsInput,
-    type UsageCreateInput as UsageCreateInput,
-    type UsageWhereInput as UsageWhereInput,
-    type UsageWhereInput2 as UsageWhereInput2,
-    type UsageWhereUniqueInput as UsageWhereUniqueInput,
-    type UsersBillingCreateEnvelopeInput as UsersBillingCreateEnvelopeInput,
-    type UsersBillingCreateInput as UsersBillingCreateInput,
-    type UsersBillingUpdateEnvelopeInput as UsersBillingUpdateEnvelopeInput,
-    type UsersBillingWhereInput as UsersBillingWhereInput,
-    type UsersWhereInput as UsersWhereInput,
-    type UsersWhereInput2 as UsersWhereInput2,
-    type UsersWhereUniqueInput as UsersWhereUniqueInput,
-    type DBAggregateUsageResponse as DBAggregateUsageResponse,
-    type DBAggregateUsageRawResponse as DBAggregateUsageRawResponse,
-    type DBAggregateUsersResponse as DBAggregateUsersResponse,
-    type DBAggregateUsersRawResponse as DBAggregateUsersRawResponse,
-    type DBCreateManyUsageResponse as DBCreateManyUsageResponse,
-    type DBCreateManyUsersResponse as DBCreateManyUsersResponse,
-    type DBCreateOneUsageResponse as DBCreateOneUsageResponse,
-    type DBCreateOneUsersResponse as DBCreateOneUsersResponse,
-    type DBDeleteManyUsageResponse as DBDeleteManyUsageResponse,
-    type DBDeleteManyUsersResponse as DBDeleteManyUsersResponse,
-    type DBDeleteOneUsageResponse as DBDeleteOneUsageResponse,
-    type DBDeleteOneUsersResponse as DBDeleteOneUsersResponse,
-    type DBExecuteRawResponse as DBExecuteRawResponse,
-    type DBFindFirstUsageResponse as DBFindFirstUsageResponse,
-    type DBFindFirstUsageOrThrowResponse as DBFindFirstUsageOrThrowResponse,
-    type DBFindFirstUsersResponse as DBFindFirstUsersResponse,
-    type DBFindFirstUsersOrThrowResponse as DBFindFirstUsersOrThrowResponse,
-    type DBFindManyUsageResponse as DBFindManyUsageResponse,
-    type DBFindManyUsersResponse as DBFindManyUsersResponse,
-    type DBFindUniqueUsageResponse as DBFindUniqueUsageResponse,
-    type DBFindUniqueUsageOrThrowResponse as DBFindUniqueUsageOrThrowResponse,
-    type DBFindUniqueUsersResponse as DBFindUniqueUsersResponse,
-    type DBFindUniqueUsersOrThrowResponse as DBFindUniqueUsersOrThrowResponse,
-    type DBFindUsageRawResponse as DBFindUsageRawResponse,
-    type DBFindUsersRawResponse as DBFindUsersRawResponse,
-    type DBGroupByUsageResponse as DBGroupByUsageResponse,
-    type DBGroupByUsersResponse as DBGroupByUsersResponse,
-    type DBQueryRawResponse as DBQueryRawResponse,
-    type DBQueryRawJsonResponse as DBQueryRawJsonResponse,
-    type DBRunCommandRawResponse as DBRunCommandRawResponse,
-    type DBUpdateManyUsageResponse as DBUpdateManyUsageResponse,
-    type DBUpdateManyUsersResponse as DBUpdateManyUsersResponse,
-    type DBUpdateOneUsageResponse as DBUpdateOneUsageResponse,
-    type DBUpdateOneUsersResponse as DBUpdateOneUsersResponse,
-    type DBUpsertOneUsageResponse as DBUpsertOneUsageResponse,
-    type DBUpsertOneUsersResponse as DBUpsertOneUsersResponse,
-    type DBAggregateUsageParams as DBAggregateUsageParams,
-    type DBAggregateUsageRawParams as DBAggregateUsageRawParams,
-    type DBAggregateUsersParams as DBAggregateUsersParams,
-    type DBAggregateUsersRawParams as DBAggregateUsersRawParams,
-    type DBCreateManyUsageParams as DBCreateManyUsageParams,
-    type DBCreateManyUsersParams as DBCreateManyUsersParams,
-    type DBCreateOneUsageParams as DBCreateOneUsageParams,
-    type DBCreateOneUsersParams as DBCreateOneUsersParams,
-    type DBDeleteManyUsageParams as DBDeleteManyUsageParams,
-    type DBDeleteManyUsersParams as DBDeleteManyUsersParams,
-    type DBDeleteOneUsageParams as DBDeleteOneUsageParams,
-    type DBDeleteOneUsersParams as DBDeleteOneUsersParams,
-    type DBExecuteRawParams as DBExecuteRawParams,
-    type DBFindFirstUsageParams as DBFindFirstUsageParams,
-    type DBFindFirstUsageOrThrowParams as DBFindFirstUsageOrThrowParams,
-    type DBFindFirstUsersParams as DBFindFirstUsersParams,
-    type DBFindFirstUsersOrThrowParams as DBFindFirstUsersOrThrowParams,
-    type DBFindManyUsageParams as DBFindManyUsageParams,
-    type DBFindManyUsersParams as DBFindManyUsersParams,
-    type DBGroupByUsageParams as DBGroupByUsageParams,
-    type DBGroupByUsersParams as DBGroupByUsersParams,
-    type DBQueryRawParams as DBQueryRawParams,
-    type DBQueryRawJsonParams as DBQueryRawJsonParams,
-    type DBRunCommandRawParams as DBRunCommandRawParams,
-    type DBUpdateManyUsageParams as DBUpdateManyUsageParams,
-    type DBUpdateManyUsersParams as DBUpdateManyUsersParams,
-    type DBUpdateOneUsageParams as DBUpdateOneUsageParams,
-    type DBUpdateOneUsersParams as DBUpdateOneUsersParams,
-    type DBUpsertOneUsageParams as DBUpsertOneUsageParams,
-    type DBUpsertOneUsersParams as DBUpsertOneUsersParams,
-  };
-
-  export {
-    Dental as Dental,
-    type DentalCheckEligibilityResponse as DentalCheckEligibilityResponse,
-    type DentalCheckEligibilityParams as DentalCheckEligibilityParams,
-  };
-
-  export {
-    Users as Users,
-    type UserRetrieveResponse as UserRetrieveResponse,
-    type UserUpdateResponse as UserUpdateResponse,
-    type UserSubscribeResponse as UserSubscribeResponse,
-    type UserRetrieveParams as UserRetrieveParams,
-    type UserUpdateParams as UserUpdateParams,
-    type UserSubscribeParams as UserSubscribeParams,
-  };
-
-  export { Vs3 as Vs3 };
+  export { Payer as Payer, type PayerListPayersResponse as PayerListPayersResponse };
 }

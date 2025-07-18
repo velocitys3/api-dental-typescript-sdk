@@ -5,44 +5,39 @@ import { APIPromise } from '../core/api-promise';
 import { RequestOptions } from '../internal/request-options';
 
 export class Eligibility extends APIResource {
-  check(body: EligibilityCheckParams, options?: RequestOptions): APIPromise<EligibilityCheckResponse> {
+  /**
+   * Request Eligibility
+   */
+  checkEligibility(body: EligibilityCheckEligibilityParams, options?: RequestOptions): APIPromise<unknown> {
     return this._client.post('/Eligibility', { body, ...options });
   }
 }
 
 export interface PayerInput {
-  id?: string | null;
+  id: string;
 }
 
 export interface ProviderInput {
-  npi?: string | null;
+  npi: string;
 
-  tax_id?: string | null;
+  tax_id: string;
 }
 
 export interface SubscriberInput {
-  dob?: string | null;
+  dob: string;
 
-  first_name?: string | null;
+  first_name: string;
 
-  group_number?: string | null;
+  group_number: string;
 
-  last_name?: string | null;
+  last_name: string;
 
-  member_id?: string | null;
+  member_id: string;
 }
 
-export interface EligibilityCheckResponse {
-  data?: EligibilityCheckResponse.Data;
-}
+export type EligibilityCheckEligibilityResponse = unknown;
 
-export namespace EligibilityCheckResponse {
-  export interface Data {
-    apidental_post_eligibility?: unknown;
-  }
-}
-
-export interface EligibilityCheckParams {
+export interface EligibilityCheckEligibilityParams {
   payer: PayerInput;
 
   provider: ProviderInput;
@@ -57,7 +52,7 @@ export declare namespace Eligibility {
     type PayerInput as PayerInput,
     type ProviderInput as ProviderInput,
     type SubscriberInput as SubscriberInput,
-    type EligibilityCheckResponse as EligibilityCheckResponse,
-    type EligibilityCheckParams as EligibilityCheckParams,
+    type EligibilityCheckEligibilityResponse as EligibilityCheckEligibilityResponse,
+    type EligibilityCheckEligibilityParams as EligibilityCheckEligibilityParams,
   };
 }

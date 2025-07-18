@@ -1,4 +1,4 @@
-import { createPathTagFunction, encodeURIPath } from 'api-dental-prod/internal/utils/path';
+import { createPathTagFunction, encodeURIPath } from 'api-dental/internal/utils/path';
 import { inspect } from 'node:util';
 import { runInNewContext } from 'node:vm';
 
